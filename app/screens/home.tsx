@@ -1,0 +1,791 @@
+import React, { useState } from "react";
+import { View, Text, ScrollView } from "react-native";
+import Header from "../components/Header";
+import HabitCard from "../components/HabitCard";
+import WeeklyHabitCard from "../components/WeeklyHabitCard";
+import MonthlyHabitCard from "../components/MonthlyHabitCard";
+
+interface Habit {
+  id: string;
+  title: string;
+  time: string;
+  frequency: string;
+  color: string;
+  icon: string;
+}
+
+interface WeeklyHabit {
+  id: string;
+  title: string;
+  frequency: string;
+  color: string;
+  icon: string;
+  dailyProgress: boolean[];
+  notificationsEnabled: boolean;
+}
+
+interface MonthlyHabit {
+  id: string;
+  title: string;
+  frequency: string;
+  color: string;
+  icon: string;
+  monthlyProgress: {
+    [month: string]: {
+      [day: string]: "completed" | "special" | "current" | "incomplete";
+    };
+  };
+  notificationsEnabled: boolean;
+}
+
+export default function HomeScreen() {
+  const [selectedPeriod, setSelectedPeriod] = useState("Today");
+  const [completedHabits, setCompletedHabits] = useState<string[]>([]);
+
+  const habits: Habit[] = [
+    {
+      id: "1",
+      title: "Cold Shower",
+      time: "07:30",
+      frequency: "Daily",
+      color: "purple",
+      icon: "water",
+    },
+    {
+      id: "2",
+      title: "Make Bed",
+      time: "08:00",
+      frequency: "Daily",
+      color: "orange",
+      icon: "bed",
+    },
+    {
+      id: "3",
+      title: "Morning Run",
+      time: "08:30",
+      frequency: "Daily",
+      color: "green",
+      icon: "fitness",
+    },
+    {
+      id: "4",
+      title: "Wake Up Routine",
+      time: "07:15",
+      frequency: "Daily",
+      color: "gray",
+      icon: "hand-left",
+    },
+  ];
+
+  const weeklyHabits: WeeklyHabit[] = [
+    {
+      id: "1",
+      title: "Cold Shower",
+      frequency: "Daily",
+      color: "purple",
+      icon: "water",
+      dailyProgress: [true, true, true, false, true, true, true], // Tue, Mon, Sun, Sat, Fri, Thu, Wed
+      notificationsEnabled: true,
+    },
+    {
+      id: "2",
+      title: "Make Bed",
+      frequency: "Daily",
+      color: "orange",
+      icon: "bed",
+      dailyProgress: [true, true, true, false, true, true, true], // Tue, Mon, Sun, Sat, Fri, Thu, Wed
+      notificationsEnabled: true,
+    },
+    {
+      id: "3",
+      title: "Morning Run",
+      frequency: "Daily",
+      color: "green",
+      icon: "fitness",
+      dailyProgress: [true, true, true, false, true, false, true], // Tue, Mon, Sun, Sat, Fri, Thu, Wed
+      notificationsEnabled: false,
+    },
+    {
+      id: "4",
+      title: "Wake Up Routine",
+      frequency: "Daily",
+      color: "gray",
+      icon: "hand-left",
+      dailyProgress: [true, true, false, false, true, true, true], // Tue, Mon, Sun, Sat, Fri, Thu, Wed
+      notificationsEnabled: true,
+    },
+  ];
+
+  const monthlyHabits: MonthlyHabit[] = [
+    {
+      id: "1",
+      title: "Cold Shower",
+      frequency: "Daily",
+      color: "purple",
+      icon: "water",
+      monthlyProgress: {
+        Jan: {
+          "1": "completed",
+          "2": "completed",
+          "3": "completed",
+          "4": "completed",
+          "5": "completed",
+          "6": "completed",
+          "7": "completed",
+          "8": "completed",
+          "9": "completed",
+          "10": "completed",
+          "11": "completed",
+          "12": "completed",
+          "13": "completed",
+          "14": "completed",
+          "15": "completed",
+          "16": "completed",
+          "17": "completed",
+          "18": "completed",
+          "19": "completed",
+          "20": "completed",
+          "21": "completed",
+          "22": "completed",
+          "23": "completed",
+          "24": "completed",
+          "25": "completed",
+          "26": "completed",
+          "27": "completed",
+          "28": "completed",
+          "29": "completed",
+          "30": "completed",
+          "31": "completed",
+        },
+        Feb: {
+          "1": "completed",
+          "2": "completed",
+          "3": "completed",
+          "4": "completed",
+          "5": "completed",
+          "6": "completed",
+          "7": "completed",
+          "8": "completed",
+          "9": "completed",
+          "10": "completed",
+          "11": "completed",
+          "12": "completed",
+          "13": "completed",
+          "14": "completed",
+          "15": "completed",
+          "16": "completed",
+          "17": "completed",
+          "18": "completed",
+          "19": "completed",
+          "20": "completed",
+          "21": "completed",
+          "22": "completed",
+          "23": "completed",
+          "24": "completed",
+          "25": "completed",
+          "26": "completed",
+          "27": "completed",
+          "28": "completed",
+        },
+        Mar: {
+          "1": "completed",
+          "2": "completed",
+          "3": "completed",
+          "4": "completed",
+          "5": "completed",
+          "6": "completed",
+          "7": "completed",
+          "8": "completed",
+          "9": "completed",
+          "10": "completed",
+          "11": "completed",
+          "12": "completed",
+          "13": "completed",
+          "14": "completed",
+          "15": "completed",
+          "16": "completed",
+          "17": "completed",
+          "18": "completed",
+          "19": "completed",
+          "20": "completed",
+          "21": "completed",
+          "22": "completed",
+          "23": "completed",
+          "24": "completed",
+          "25": "completed",
+          "26": "completed",
+          "27": "completed",
+          "28": "completed",
+          "29": "completed",
+          "30": "completed",
+          "31": "completed",
+        },
+        Apr: {
+          "1": "completed",
+          "2": "completed",
+          "3": "completed",
+          "4": "completed",
+          "5": "completed",
+          "6": "completed",
+          "7": "completed",
+          "8": "completed",
+          "9": "completed",
+          "10": "completed",
+          "11": "completed",
+          "12": "completed",
+          "13": "completed",
+          "14": "completed",
+          "15": "completed",
+          "16": "completed",
+          "17": "completed",
+          "18": "completed",
+          "19": "completed",
+          "20": "completed",
+          "21": "completed",
+          "22": "completed",
+          "23": "completed",
+          "24": "completed",
+          "25": "completed",
+          "26": "completed",
+          "27": "completed",
+          "28": "completed",
+          "29": "completed",
+          "30": "completed",
+        },
+      },
+      notificationsEnabled: true,
+    },
+    {
+      id: "2",
+      title: "Make Bed",
+      frequency: "Daily",
+      color: "orange",
+      icon: "bed",
+      monthlyProgress: {
+        Jan: {
+          "1": "completed",
+          "2": "completed",
+          "3": "completed",
+          "4": "completed",
+          "5": "completed",
+          "6": "completed",
+          "7": "completed",
+          "8": "completed",
+          "9": "completed",
+          "10": "completed",
+          "11": "completed",
+          "12": "completed",
+          "13": "completed",
+          "14": "completed",
+          "15": "completed",
+          "16": "completed",
+          "17": "completed",
+          "18": "completed",
+          "19": "completed",
+          "20": "completed",
+          "21": "completed",
+          "22": "completed",
+          "23": "completed",
+          "24": "completed",
+          "25": "completed",
+          "26": "completed",
+          "27": "completed",
+          "28": "completed",
+          "29": "completed",
+          "30": "completed",
+          "31": "completed",
+        },
+        Feb: {
+          "1": "completed",
+          "2": "completed",
+          "3": "completed",
+          "4": "completed",
+          "5": "completed",
+          "6": "completed",
+          "7": "completed",
+          "8": "completed",
+          "9": "completed",
+          "10": "completed",
+          "11": "completed",
+          "12": "completed",
+          "13": "completed",
+          "14": "completed",
+          "15": "completed",
+          "16": "completed",
+          "17": "completed",
+          "18": "completed",
+          "19": "completed",
+          "20": "completed",
+          "21": "completed",
+          "22": "completed",
+          "23": "completed",
+          "24": "completed",
+          "25": "completed",
+          "26": "completed",
+          "27": "completed",
+          "28": "completed",
+        },
+        Mar: {
+          "1": "completed",
+          "2": "completed",
+          "3": "completed",
+          "4": "completed",
+          "5": "completed",
+          "6": "completed",
+          "7": "completed",
+          "8": "completed",
+          "9": "completed",
+          "10": "completed",
+          "11": "completed",
+          "12": "completed",
+          "13": "completed",
+          "14": "completed",
+          "15": "completed",
+          "16": "completed",
+          "17": "completed",
+          "18": "completed",
+          "19": "completed",
+          "20": "completed",
+          "21": "completed",
+          "22": "completed",
+          "23": "completed",
+          "24": "completed",
+          "25": "completed",
+          "26": "completed",
+          "27": "completed",
+          "28": "completed",
+          "29": "completed",
+          "30": "completed",
+          "31": "completed",
+        },
+        Apr: {
+          "1": "completed",
+          "2": "completed",
+          "3": "completed",
+          "4": "completed",
+          "5": "completed",
+          "6": "completed",
+          "7": "completed",
+          "8": "completed",
+          "9": "completed",
+          "10": "completed",
+          "11": "completed",
+          "12": "completed",
+          "13": "completed",
+          "14": "completed",
+          "15": "completed",
+          "16": "completed",
+          "17": "completed",
+          "18": "completed",
+          "19": "completed",
+          "20": "completed",
+          "21": "completed",
+          "22": "completed",
+          "23": "completed",
+          "24": "completed",
+          "25": "completed",
+          "26": "completed",
+          "27": "completed",
+          "28": "completed",
+          "29": "completed",
+          "30": "completed",
+        },
+      },
+      notificationsEnabled: true,
+    },
+    {
+      id: "3",
+      title: "Morning Run",
+      frequency: "Daily",
+      color: "green",
+      icon: "fitness",
+      monthlyProgress: {
+        Jan: {
+          "1": "completed",
+          "2": "completed",
+          "3": "completed",
+          "4": "completed",
+          "5": "completed",
+          "6": "completed",
+          "7": "completed",
+          "8": "completed",
+          "9": "completed",
+          "10": "completed",
+          "11": "completed",
+          "12": "completed",
+          "13": "completed",
+          "14": "completed",
+          "15": "completed",
+          "16": "completed",
+          "17": "completed",
+          "18": "completed",
+          "19": "completed",
+          "20": "completed",
+          "21": "completed",
+          "22": "completed",
+          "23": "completed",
+          "24": "completed",
+          "25": "completed",
+          "26": "completed",
+          "27": "completed",
+          "28": "completed",
+          "29": "completed",
+          "30": "completed",
+          "31": "completed",
+        },
+        Feb: {
+          "1": "completed",
+          "2": "completed",
+          "3": "completed",
+          "4": "completed",
+          "5": "completed",
+          "6": "completed",
+          "7": "completed",
+          "8": "completed",
+          "9": "completed",
+          "10": "completed",
+          "11": "completed",
+          "12": "completed",
+          "13": "completed",
+          "14": "completed",
+          "15": "completed",
+          "16": "completed",
+          "17": "completed",
+          "18": "completed",
+          "19": "completed",
+          "20": "completed",
+          "21": "completed",
+          "22": "completed",
+          "23": "completed",
+          "24": "completed",
+          "25": "completed",
+          "26": "completed",
+          "27": "completed",
+          "28": "completed",
+        },
+        Mar: {
+          "1": "completed",
+          "2": "completed",
+          "3": "completed",
+          "4": "completed",
+          "5": "completed",
+          "6": "completed",
+          "7": "completed",
+          "8": "completed",
+          "9": "completed",
+          "10": "completed",
+          "11": "completed",
+          "12": "completed",
+          "13": "completed",
+          "14": "completed",
+          "15": "completed",
+          "16": "completed",
+          "17": "completed",
+          "18": "completed",
+          "19": "completed",
+          "20": "completed",
+          "21": "completed",
+          "22": "completed",
+          "23": "completed",
+          "24": "completed",
+          "25": "completed",
+          "26": "completed",
+          "27": "completed",
+          "28": "completed",
+          "29": "completed",
+          "30": "completed",
+          "31": "completed",
+        },
+        Apr: {
+          "1": "completed",
+          "2": "completed",
+          "3": "completed",
+          "4": "completed",
+          "5": "completed",
+          "6": "completed",
+          "7": "completed",
+          "8": "completed",
+          "9": "completed",
+          "10": "completed",
+          "11": "completed",
+          "12": "completed",
+          "13": "completed",
+          "14": "completed",
+          "15": "completed",
+          "16": "completed",
+          "17": "completed",
+          "18": "completed",
+          "19": "completed",
+          "20": "completed",
+          "21": "completed",
+          "22": "completed",
+          "23": "completed",
+          "24": "completed",
+          "25": "completed",
+          "26": "completed",
+          "27": "completed",
+          "28": "completed",
+          "29": "completed",
+          "30": "completed",
+        },
+      },
+      notificationsEnabled: false,
+    },
+    {
+      id: "4",
+      title: "Wake Up Routine",
+      frequency: "Daily",
+      color: "gray",
+      icon: "hand-left",
+      monthlyProgress: {
+        Jan: {
+          "1": "completed",
+          "2": "completed",
+          "3": "completed",
+          "4": "completed",
+          "5": "completed",
+          "6": "completed",
+          "7": "completed",
+          "8": "completed",
+          "9": "completed",
+          "10": "completed",
+          "11": "completed",
+          "12": "completed",
+          "13": "completed",
+          "14": "completed",
+          "15": "completed",
+          "16": "completed",
+          "17": "completed",
+          "18": "completed",
+          "19": "completed",
+          "20": "completed",
+          "21": "completed",
+          "22": "completed",
+          "23": "completed",
+          "24": "completed",
+          "25": "completed",
+          "26": "completed",
+          "27": "completed",
+          "28": "completed",
+          "29": "completed",
+          "30": "completed",
+          "31": "completed",
+        },
+        Feb: {
+          "1": "completed",
+          "2": "completed",
+          "3": "completed",
+          "4": "completed",
+          "5": "completed",
+          "6": "completed",
+          "7": "completed",
+          "8": "completed",
+          "9": "completed",
+          "10": "completed",
+          "11": "completed",
+          "12": "completed",
+          "13": "completed",
+          "14": "completed",
+          "15": "completed",
+          "16": "completed",
+          "17": "completed",
+          "18": "completed",
+          "19": "completed",
+          "20": "completed",
+          "21": "completed",
+          "22": "completed",
+          "23": "completed",
+          "24": "completed",
+          "25": "completed",
+          "26": "completed",
+          "27": "completed",
+          "28": "completed",
+        },
+        Mar: {
+          "1": "completed",
+          "2": "completed",
+          "3": "completed",
+          "4": "completed",
+          "5": "completed",
+          "6": "completed",
+          "7": "completed",
+          "8": "completed",
+          "9": "completed",
+          "10": "completed",
+          "11": "completed",
+          "12": "completed",
+          "13": "completed",
+          "14": "completed",
+          "15": "completed",
+          "16": "completed",
+          "17": "completed",
+          "18": "completed",
+          "19": "completed",
+          "20": "completed",
+          "21": "completed",
+          "22": "completed",
+          "23": "completed",
+          "24": "completed",
+          "25": "completed",
+          "26": "completed",
+          "27": "completed",
+          "28": "completed",
+          "29": "completed",
+          "30": "completed",
+          "31": "completed",
+        },
+        Apr: {
+          "1": "completed",
+          "2": "completed",
+          "3": "completed",
+          "4": "completed",
+          "5": "completed",
+          "6": "completed",
+          "7": "completed",
+          "8": "completed",
+          "9": "completed",
+          "10": "completed",
+          "11": "completed",
+          "12": "completed",
+          "13": "completed",
+          "14": "completed",
+          "15": "completed",
+          "16": "completed",
+          "17": "completed",
+          "18": "completed",
+          "19": "completed",
+          "20": "completed",
+          "21": "completed",
+          "22": "completed",
+          "23": "completed",
+          "24": "completed",
+          "25": "completed",
+          "26": "completed",
+          "27": "completed",
+          "28": "completed",
+          "29": "completed",
+          "30": "completed",
+        },
+      },
+      notificationsEnabled: true,
+    },
+  ];
+
+  const handlePeriodChange = (period: string) => {
+    setSelectedPeriod(period);
+    console.log(`Switched to ${period} view`);
+  };
+
+  const handleHabitPress = (habitName: string) => {
+    console.log(`${habitName} habit pressed`);
+  };
+
+  const handleToggleComplete = (habitName: string, completed: boolean) => {
+    if (completed) {
+      setCompletedHabits((prev) => [...prev, habitName]);
+    } else {
+      setCompletedHabits((prev) => prev.filter((name) => name !== habitName));
+    }
+    console.log(
+      `${habitName} ${completed ? "completed" : "marked incomplete"}`
+    );
+  };
+
+  const activeHabits = habits.filter(
+    (habit) => !completedHabits.includes(habit.title)
+  );
+  const completedHabitsList = habits.filter((habit) =>
+    completedHabits.includes(habit.title)
+  );
+
+  return (
+    <View className="flex-1 bg-gray-200">
+      <Header
+        selectedPeriod={selectedPeriod}
+        onPeriodChange={handlePeriodChange}
+      />
+      <ScrollView className="flex-1 px-4">
+        {selectedPeriod === "Today" && (
+          <View className="py-4">
+            {/* Active Habits */}
+            {activeHabits.map((habit) => (
+              <HabitCard
+                key={habit.id}
+                title={habit.title}
+                time={habit.time}
+                frequency={habit.frequency}
+                color={habit.color}
+                icon={habit.icon}
+                isCompleted={false}
+                onPress={() => handleHabitPress(habit.title)}
+                onToggleComplete={handleToggleComplete}
+              />
+            ))}
+
+            {/* Completed Section */}
+            {completedHabitsList.length > 0 && (
+              <>
+                <View className="flex-row items-center my-6">
+                  <View className="flex-1 h-px bg-gray-300" />
+                  <Text className="mx-4 text-gray-500 text-sm font-medium">
+                    Completed
+                  </Text>
+                  <View className="flex-1 h-px bg-gray-300" />
+                </View>
+
+                {/* Completed Habits */}
+                {completedHabitsList.map((habit) => (
+                  <HabitCard
+                    key={habit.id}
+                    title={habit.title}
+                    time={habit.time}
+                    frequency={habit.frequency}
+                    color={habit.color}
+                    icon={habit.icon}
+                    isCompleted={true}
+                    onPress={() => handleHabitPress(habit.title)}
+                    onToggleComplete={handleToggleComplete}
+                  />
+                ))}
+              </>
+            )}
+          </View>
+        )}
+
+        {selectedPeriod === "Weekly" && (
+          <View className="py-4">
+            {weeklyHabits.map((habit) => (
+              <WeeklyHabitCard
+                key={habit.id}
+                title={habit.title}
+                frequency={habit.frequency}
+                color={habit.color}
+                icon={habit.icon}
+                dailyProgress={habit.dailyProgress}
+                notificationsEnabled={habit.notificationsEnabled}
+                onPress={() => handleHabitPress(habit.title)}
+              />
+            ))}
+          </View>
+        )}
+
+        {selectedPeriod === "Monthly" && (
+          <View className="py-4">
+            {monthlyHabits.map((habit) => (
+              <MonthlyHabitCard
+                key={habit.id}
+                title={habit.title}
+                frequency={habit.frequency}
+                color={habit.color}
+                icon={habit.icon}
+                monthlyProgress={habit.monthlyProgress}
+                notificationsEnabled={habit.notificationsEnabled}
+                onPress={() => handleHabitPress(habit.title)}
+              />
+            ))}
+          </View>
+        )}
+      </ScrollView>
+    </View>
+  );
+}
