@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 interface MonthlyHabitCardProps {
@@ -129,42 +129,58 @@ export default function MonthlyHabitCard({
         </View>
 
         {/* Calendar Grid */}
-        <View className="flex-row">
-          {/* Days of week labels */}
-          <View className="mr-2">
-            {daysOfWeek.map((day, index) => (
-              <View key={index} className="h-6 items-center justify-center">
-                <Text className="text-gray-500 text-xs font-quando">{day}</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View className="flex-row">
+            {/* Days of week labels */}
+            <View className="mr-2">
+              {daysOfWeek.map((day, index) => (
+                <View
+                  key={index}
+                  className="h-3 items-center justify-center mb-1"
+                >
+                  <Text className="text-gray-500 text-xs font-quando">
+                    {day}
+                  </Text>
+                </View>
+              ))}
+            </View>
+
+            {/* Monthly grids */}
+            <View className="flex-row">
+              {/* Tiles grid */}
+              <View className="flex-row">
+                {Array.from({ length: 28 }, (_, colIndex) => (
+                  <View key={colIndex} className="mr-0.5">
+                    {Array.from({ length: 7 }, (_, rowIndex) => {
+                      const dayIndex = colIndex * 7 + rowIndex + 1;
+                      const day = dayIndex.toString();
+                      const status = getDayStatus("Jan", day); // For now, just use Jan data
+                      return (
+                        <View
+                          key={rowIndex}
+                          className={`w-3 h-3 m-0.5 rounded-sm items-center justify-center ${getDayStyle(status)}`}
+                        >
+                          {renderSpecialIcon(status)}
+                        </View>
+                      );
+                    })}
+                  </View>
+                ))}
               </View>
-            ))}
-          </View>
 
-          {/* Monthly grids */}
-          {months.map((month) => (
-            <View key={month} className="flex-1 mr-2">
-              {/* Month label */}
-              <Text className="text-gray-500 text-xs font-quando text-center mb-1">
-                {month}
-              </Text>
-
-              {/* Days grid */}
-              <View className="flex-row flex-wrap">
-                {Array.from({ length: 28 }, (_, i) => {
-                  const day = (i + 1).toString();
-                  const status = getDayStatus(month, day);
-                  return (
-                    <View
-                      key={i}
-                      className={`w-3 h-3 m-0.5 rounded-sm items-center justify-center ${getDayStyle(status)}`}
-                    >
-                      {renderSpecialIcon(status)}
-                    </View>
-                  );
-                })}
+              {/* Month labels at bottom */}
+              <View className="flex-row">
+                {["Jan", "Feb", "Mar", "Apr"].map((month, monthIndex) => (
+                  <View key={monthIndex} className="mr-0.5">
+                    <Text className="text-gray-500 text-xs font-quando text-center mt-1">
+                      {month}
+                    </Text>
+                  </View>
+                ))}
               </View>
             </View>
-          ))}
-        </View>
+          </View>
+        </ScrollView>
       </View>
     </TouchableOpacity>
   );
