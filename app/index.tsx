@@ -9,6 +9,7 @@ import HomeScreen from "./screens/home";
 export default function Index() {
   const [activeTab, setActiveTab] = useState("home");
   const insets = useSafeAreaInsets();
+
   const router = useRouter();
 
   const handleTabPress = (tabId: string) => {

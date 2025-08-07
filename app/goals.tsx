@@ -9,6 +9,7 @@ import GoalsScreen from "./screens/goals";
 export default function Goals() {
   const [activeTab, setActiveTab] = useState("goals");
   const insets = useSafeAreaInsets();
+
   const router = useRouter();
 
   const handleTabPress = (tabId: string) => {

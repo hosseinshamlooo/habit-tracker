@@ -1,10 +1,18 @@
-import React, { useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import { useRouter } from "expo-router";
+import React, { useState, useRef, useEffect } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Modal,
+  TextInput,
+  Animated,
+} from "react-native";
 import Header from "../components/Header";
 import HabitCard from "../components/HabitCard";
 import WeeklyHabitCard from "../components/WeeklyHabitCard";
 import MonthlyHabitCard from "../components/MonthlyHabitCard";
+import { Ionicons } from "@expo/vector-icons";
 
 interface Habit {
   id: string;
@@ -40,9 +48,21 @@ interface MonthlyHabit {
 }
 
 export default function HomeScreen() {
-  const router = useRouter();
   const [selectedPeriod, setSelectedPeriod] = useState("Today");
   const [completedHabits, setCompletedHabits] = useState<string[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [newHabitName, setNewHabitName] = useState("");
+  const [newHabitColor, setNewHabitColor] = useState("purple");
+  const [newHabitFrequency, setNewHabitFrequency] = useState("Daily");
+  const [newHabitNotificationsEnabled, setNewHabitNotificationsEnabled] =
+    useState(true);
+  const [weeklyFrequency, setWeeklyFrequency] = useState(6);
+  const [selectedDays, setSelectedDays] = useState<number[]>([
+    0, 1, 2, 3, 4, 5, 6,
+  ]);
+  const [selectedMonthDays, setSelectedMonthDays] = useState<number[]>([6]);
+
+  const slideAnim = useRef(new Animated.Value(1000)).current;
 
   const habits: Habit[] = [
     {
@@ -1723,11 +1743,7 @@ export default function HomeScreen() {
   };
 
   const handleHabitPress = (habitName: string) => {
-    if (habitName === "Add New Habit") {
-      router.push("/screens/add-habit");
-    } else {
-      console.log(`${habitName} habit pressed`);
-    }
+    console.log(`${habitName} habit pressed`);
   };
 
   const handleToggleComplete = (habitName: string, completed: boolean) => {
@@ -1740,6 +1756,17 @@ export default function HomeScreen() {
       `${habitName} ${completed ? "completed" : "marked incomplete"}`
     );
   };
+
+  useEffect(() => {
+    if (isModalVisible) {
+      Animated.spring(slideAnim, {
+        toValue: 0,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      slideAnim.setValue(1000);
+    }
+  }, [isModalVisible]);
 
   const activeHabits = habits.filter(
     (habit) => !completedHabits.includes(habit.title)
@@ -1775,7 +1802,7 @@ export default function HomeScreen() {
             {/* Add New Habit Box */}
             <TouchableOpacity
               className="flex-row items-center p-4 rounded-2xl mb-4 mt-2 mx-3 bg-gray-300"
-              onPress={() => handleHabitPress("Add New Habit")}
+              onPress={() => setIsModalVisible(true)}
               activeOpacity={0.7}
             >
               <View className="w-12 h-12 rounded-full bg-gray-400 items-center justify-center mr-4">
@@ -1839,7 +1866,7 @@ export default function HomeScreen() {
             {/* Add New Habit Box */}
             <TouchableOpacity
               className="flex-row items-center p-4 rounded-2xl mb-4 mt-2 mx-3 bg-gray-300"
-              onPress={() => handleHabitPress("Add New Habit")}
+              onPress={() => setIsModalVisible(true)}
               activeOpacity={0.7}
             >
               <View className="w-12 h-12 rounded-full bg-gray-400 items-center justify-center mr-4">
@@ -1875,7 +1902,7 @@ export default function HomeScreen() {
             {/* Add New Habit Box */}
             <TouchableOpacity
               className="flex-row items-center p-4 rounded-2xl mb-4 mt-2 mx-3 bg-gray-300"
-              onPress={() => handleHabitPress("Add New Habit")}
+              onPress={() => setIsModalVisible(true)}
               activeOpacity={0.7}
             >
               <View className="w-12 h-12 rounded-full bg-gray-400 items-center justify-center mr-4">
@@ -1893,6 +1920,289 @@ export default function HomeScreen() {
           </View>
         )}
       </ScrollView>
+
+      <Modal
+        visible={isModalVisible}
+        animationType="none"
+        transparent={true}
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <View
+          className="flex-1 justify-end"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.4)" }}
+        >
+          <Animated.View
+            className="bg-white w-full h-2/3 rounded-t-3xl p-6"
+            style={{ transform: [{ translateY: slideAnim }] }}
+          >
+            {/* Header */}
+            <View className="flex-row items-center mb-6">
+              <TouchableOpacity onPress={() => setIsModalVisible(false)}>
+                <Ionicons name="chevron-back" size={24} color="#374151" />
+              </TouchableOpacity>
+              <Text className="text-2xl ml-4 text-gray-800 font-quando">
+                Create Habit
+              </Text>
+            </View>
+            {/* Title Section */}
+            <View className="bg-gray-100 rounded-xl p-4 mb-4">
+              <TextInput
+                placeholder="Title"
+                placeholderTextColor="#9CA3AF"
+                value={newHabitName}
+                onChangeText={setNewHabitName}
+                className="text-gray-800 text-base font-quando"
+              />
+            </View>
+
+            {/* Description Section */}
+            <View className="bg-gray-100 rounded-xl p-4 mb-4">
+              <TextInput
+                placeholder="Description"
+                placeholderTextColor="#9CA3AF"
+                multiline
+                numberOfLines={3}
+                className="text-gray-800 text-base font-quando"
+              />
+            </View>
+            {/* Color Section */}
+            <View className="bg-gray-100 rounded-xl p-4 mb-4">
+              <View className="flex-row items-center justify-between">
+                <Text className="text-gray-800 text-base font-quando">
+                  Color
+                </Text>
+                <TouchableOpacity
+                  className="w-8 h-8 rounded-lg"
+                  style={{
+                    backgroundColor:
+                      newHabitColor === "purple"
+                        ? "#A855F7"
+                        : newHabitColor === "orange"
+                          ? "#FB923C"
+                          : newHabitColor === "green"
+                            ? "#4ADE80"
+                            : newHabitColor === "blue"
+                              ? "#3B82F6"
+                              : "#9CA3AF",
+                  }}
+                  onPress={() => {
+                    // Cycle through colors
+                    const colors = [
+                      "purple",
+                      "orange",
+                      "green",
+                      "blue",
+                      "gray",
+                    ];
+                    const currentIndex = colors.indexOf(newHabitColor);
+                    const nextIndex = (currentIndex + 1) % colors.length;
+                    setNewHabitColor(colors[nextIndex]);
+                  }}
+                />
+              </View>
+            </View>
+            {/* Repeat & Days Section */}
+            <View className="bg-gray-100 rounded-xl p-4 mb-4">
+              <View className="flex-row items-center justify-between mb-3">
+                <Text className="text-gray-800 text-base font-quando">
+                  Repeat
+                </Text>
+                <TouchableOpacity
+                  className={`w-12 h-6 rounded-full flex-row items-center ${
+                    true ? "bg-blue-500" : "bg-gray-300"
+                  }`}
+                >
+                  <View
+                    className={`w-5 h-5 rounded-full bg-white ${
+                      true ? "ml-6" : "ml-1"
+                    }`}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View className="flex-row bg-gray-200 rounded-lg p-1 mb-4">
+                {["Daily", "Weekly", "Monthly"].map((freq) => (
+                  <TouchableOpacity
+                    key={freq}
+                    className={`flex-1 py-2 px-3 rounded-md ${
+                      newHabitFrequency === freq ? "bg-white" : ""
+                    }`}
+                    onPress={() => setNewHabitFrequency(freq)}
+                  >
+                    <Text
+                      className={`text-center font-quando ${
+                        newHabitFrequency === freq
+                          ? "text-gray-800"
+                          : "text-gray-600"
+                      }`}
+                    >
+                      {freq}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {/* Dynamic Days Section */}
+              {newHabitFrequency === "Daily" && (
+                <View>
+                  <Text className="text-gray-800 text-base font-quando mb-3">
+                    On these days
+                  </Text>
+                  <View className="flex-row justify-between">
+                    {["M", "T", "W", "T", "F", "S", "S"].map((day, index) => (
+                      <TouchableOpacity
+                        key={index}
+                        className={`w-10 h-10 rounded-lg items-center justify-center ${
+                          selectedDays.includes(index)
+                            ? "bg-gray-800"
+                            : "bg-gray-300"
+                        }`}
+                        onPress={() => {
+                          if (selectedDays.includes(index)) {
+                            setSelectedDays(
+                              selectedDays.filter((d) => d !== index)
+                            );
+                          } else {
+                            setSelectedDays([...selectedDays, index]);
+                          }
+                        }}
+                      >
+                        <Text className="text-white text-lg font-quando">
+                          {day}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+              )}
+
+              {newHabitFrequency === "Weekly" && (
+                <View className="flex-row items-center justify-between">
+                  <View>
+                    <Text className="text-gray-800 text-base font-quando mb-1 mt-2">
+                      Frequency
+                    </Text>
+                    <Text className="text-gray-500 text-sm font-quando">
+                      {weeklyFrequency === 1
+                        ? "Once a week"
+                        : weeklyFrequency === 2
+                          ? "Twice a week"
+                          : weeklyFrequency === 3
+                            ? "3 times a week"
+                            : weeklyFrequency === 4
+                              ? "4 times a week"
+                              : weeklyFrequency === 5
+                                ? "5 times a week"
+                                : weeklyFrequency === 6
+                                  ? "6 times a week"
+                                  : "Everyday"}
+                    </Text>
+                  </View>
+                  <View className="flex-row items-center">
+                    <TouchableOpacity
+                      className="w-10 h-10 rounded-full bg-gray-500 items-center justify-center mr-2"
+                      onPress={() =>
+                        setWeeklyFrequency(Math.max(1, weeklyFrequency - 1))
+                      }
+                    >
+                      <Text className="text-white text-3xl font-bold">-</Text>
+                    </TouchableOpacity>
+                    <Text className="text-gray-600 text-lg font-quando mx-3">
+                      {weeklyFrequency}
+                    </Text>
+                    <TouchableOpacity
+                      className="w-10 h-10 rounded-full bg-gray-500 items-center justify-center ml-2"
+                      onPress={() =>
+                        setWeeklyFrequency(Math.min(7, weeklyFrequency + 1))
+                      }
+                    >
+                      <Text className="text-white text-3xl font-bold">+</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+
+              {newHabitFrequency === "Monthly" && (
+                <View>
+                  <Text className="text-gray-800 text-base font-quando mb-3">
+                    Every month on 6
+                  </Text>
+                  <View className="flex-row flex-wrap">
+                    {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
+                      <TouchableOpacity
+                        key={day}
+                        className={`w-8 h-8 rounded-full items-center justify-center mr-1 mb-1 ${
+                          selectedMonthDays.includes(day)
+                            ? "bg-blue-500"
+                            : "bg-transparent"
+                        }`}
+                        onPress={() => {
+                          if (selectedMonthDays.includes(day)) {
+                            setSelectedMonthDays(
+                              selectedMonthDays.filter((d) => d !== day)
+                            );
+                          } else {
+                            setSelectedMonthDays([...selectedMonthDays, day]);
+                          }
+                        }}
+                      >
+                        <Text
+                          className={`text-sm font-quando ${
+                            selectedMonthDays.includes(day)
+                              ? "text-white"
+                              : "text-gray-800"
+                          }`}
+                        >
+                          {day}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+              )}
+            </View>
+
+            {/* Reminder Section */}
+            <View className="bg-gray-100 rounded-xl p-4 mb-4">
+              <View className="flex-row items-center justify-between">
+                <Text className="text-gray-800 text-base font-quando">
+                  Reminder
+                </Text>
+                <TouchableOpacity
+                  className={`w-12 h-6 rounded-full flex-row items-center ${
+                    false ? "bg-blue-500" : "bg-gray-300"
+                  }`}
+                >
+                  <View
+                    className={`w-5 h-5 rounded-full bg-white ${
+                      false ? "ml-6" : "ml-1"
+                    }`}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Goal Section */}
+            <View className="bg-gray-100 rounded-xl p-4 mb-4">
+              <View className="flex-row items-center justify-between">
+                <Text className="text-gray-800 text-base font-quando">
+                  Goal
+                </Text>
+                <TouchableOpacity
+                  className={`w-12 h-6 rounded-full flex-row items-center ${
+                    false ? "bg-blue-500" : "bg-gray-300"
+                  }`}
+                >
+                  <View
+                    className={`w-5 h-5 rounded-full bg-white ${
+                      false ? "ml-6" : "ml-1"
+                    }`}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Animated.View>
+        </View>
+      </Modal>
     </View>
   );
 }

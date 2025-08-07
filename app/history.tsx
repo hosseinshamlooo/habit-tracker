@@ -9,6 +9,7 @@ import HistoryScreen from "./screens/history";
 export default function History() {
   const [activeTab, setActiveTab] = useState("history");
   const insets = useSafeAreaInsets();
+
   const router = useRouter();
 
   const handleTabPress = (tabId: string) => {

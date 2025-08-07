@@ -9,6 +9,7 @@ import SettingsScreen from "./screens/settings";
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("settings");
   const insets = useSafeAreaInsets();
+
   const router = useRouter();
 
   const handleTabPress = (tabId: string) => {
