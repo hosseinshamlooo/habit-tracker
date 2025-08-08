@@ -19,9 +19,6 @@ export default function Goals() {
       case "home":
         router.push("/");
         break;
-      case "history":
-        router.push("/history");
-        break;
       case "goals":
         // Already on goals, no navigation needed
         break;

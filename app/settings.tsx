@@ -19,9 +19,6 @@ export default function Settings() {
       case "home":
         router.push("/");
         break;
-      case "history":
-        router.push("/history");
-        break;
       case "goals":
         router.push("/goals");
         break;

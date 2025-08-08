@@ -17,12 +17,6 @@ const navItems: NavItem[] = [
     iconInactive: "home-outline",
   },
   {
-    id: "history",
-    label: "History",
-    iconActive: "time",
-    iconInactive: "time-outline",
-  },
-  {
     id: "goals",
     label: "Goals",
     iconActive: "trophy",

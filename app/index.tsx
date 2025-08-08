@@ -19,9 +19,6 @@ export default function Index() {
       case "home":
         // Already on home, no navigation needed
         break;
-      case "history":
-        router.push("/history");
-        break;
       case "goals":
         router.push("/goals");
         break;
